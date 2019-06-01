@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class SplashScreen extends StatelessWidget {
-  Timer _timer;
-
   SplashScreen();
 
   @override
   Widget build(BuildContext context) {
-    _timer = Timer(Duration(seconds: 1), () {
+    Timer(Duration(seconds: 5), () {
       Navigator.of(context).pushReplacementNamed('/main_list');
     });
 
@@ -31,7 +29,9 @@ class SplashScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.width * 0.5,
             width: MediaQuery.of(context).size.width * 0.5,
           ),
-          SizedBox(height: 30,),
+          SizedBox(
+            height: 30,
+          ),
           Text(
             'Flutter HELPER is here to serve you!',
             textAlign: TextAlign.center,

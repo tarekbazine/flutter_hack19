@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hack19/pages/github_screen.dart';
 import 'package:flutter_hack19/pages/so_screen.dart';
 import 'package:flutter_hack19/pages/splash_screen.dart';
 import 'package:flutter_hack19/pages/main_list_screen.dart';
@@ -11,7 +12,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-//      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -27,13 +28,11 @@ class App extends StatelessWidget {
       home: SplashScreen(),
       // Start the app with the "/" named route. In our case, the app will start
       // on the FirstScreen Widget
-//      initialRoute: '/',
       routes: {
-//        '/': (context) => App(),
         '/main_list': (context) => MainList(),
         '/so_route': (context) => SO(),
         '/reddit_route': (context) => MainList(),
-        '/github_route': (context) => MainList(),
+        '/github_route': (context) => Github(),
       },
     );
   }

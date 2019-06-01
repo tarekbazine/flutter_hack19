@@ -7,17 +7,18 @@ import 'package:http/http.dart' as http;
 //import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
-final mainUrl =
-    "https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&accepted=True&tagged=flutter&site=stackoverflow&q=";
-
-class SO extends StatefulWidget {
+class Github extends StatefulWidget {
   @override
-  _SOState createState() => _SOState();
+  _GithubState createState() => _GithubState();
 }
 
-class _SOState extends State<SO> {
+class _GithubState extends State<Github> {
   bool _isLoading = true;
   List _questions;
+
+  String getMainUrl(String q) {
+    return "https://api.github.com/search/repositories?q=$q+language:dart&sort=stars&order=desc";
+  }
 
   var _textController = TextEditingController();
 
@@ -25,14 +26,14 @@ class _SOState extends State<SO> {
   void initState() {
     super.initState();
 
-    _getQuestions('');
+    _getRepos('');
 
     _textController.addListener(() {
       //here you have the changes of your textfield
       print("value: ${_textController.text}");
 
       if (_textController.text.isNotEmpty) {
-        _getQuestions(_textController.text);
+        _getRepos(_textController.text);
         //use setState to rebuild the widget
         setState(() {
           _isLoading = true;
@@ -49,15 +50,20 @@ class _SOState extends State<SO> {
     _textController.dispose();
   }
 
-  _getQuestions(String q) {
+  _getRepos(String q) {
     fetchQuestions(q).then((response) {
       print(response.statusCode);
       if (response.statusCode == 200) {
         var extractedData = json.decode(response.body);
 
+//        // If server returns an OK response, parse the JSON
+//        return Post.fromJson(json.decode(response.body));
+
         setState(() {
           _isLoading = false;
           _questions = extractedData["items"];
+//          Iterable list = json.decode(response.body);
+//          users = list.map((model) => User.fromJson(model)).toList();
         });
       } else {
         // If that response was not OK, throw an error.
@@ -67,19 +73,18 @@ class _SOState extends State<SO> {
   }
 
   Future<http.Response> fetchQuestions(String q) {
-    return http.get(mainUrl + q);
+    return http.get(getMainUrl(q));
   }
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
-  Widget _buildRow(String title, String url) {
+  Widget _buildRow(String title,int stars, String url) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => _WebView(url: url, title: title)));
-//          Navigator.pushNamed(context, routName);
         print("onTap called. " + url);
       },
       child: ListTile(
@@ -91,7 +96,7 @@ class _SOState extends State<SO> {
           style: _biggerFont,
         ),
         trailing: Icon(
-          Icons.check,
+          Icons.star_border,
           color: Colors.green,
         ),
       ),
@@ -102,7 +107,7 @@ class _SOState extends State<SO> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("StackOverflow"),
+        title: Text("GitHub"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context, false),
@@ -144,7 +149,7 @@ class _SOState extends State<SO> {
 //                    if (i.isOdd) return Divider();
 //            final index = i ~/ 2 + 1;
                         final element = _questions[i];
-                        return _buildRow(element['title'], element['link']);
+                        return _buildRow(element['full_name'], element['stargazers_count'], element['html_url']);
                       },
                     ),
                   ),

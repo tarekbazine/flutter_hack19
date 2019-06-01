@@ -9,11 +9,11 @@ class MainList extends StatelessWidget {
     [],
     ['Code         ', 'Github', '/github_route', 'github.png'],
     [],
-    ['Guide         ', 'FAQ', '/github_route', 'faqs.png'],
+    ['Guide         ', 'FAQ', '/main_list', 'faqs.png'],
     [],
-    ['Guide         ', 'Tips', '/github_route', 'tips.png'],
+    ['Guide         ', 'Tips', '/main_list', 'tips.png'],
     [],
-    ['Guide         ', 'Tutorials', '/github_route', 'directions.png'],
+    ['Guide         ', 'Tutorials', '/main_list', 'directions.png'],
     [],
   ];
 
@@ -25,7 +25,6 @@ class MainList extends StatelessWidget {
       return GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, routName);
-//          print("onTap called.");
         },
         child: ListTile(
           leading: Text(
@@ -49,7 +48,6 @@ class MainList extends StatelessWidget {
     final title = 'Sources';
 
     return Scaffold(
-//      appBar: null,
       appBar: AppBar(
         title: Text(title),
         elevation: 0,
@@ -59,7 +57,6 @@ class MainList extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         itemBuilder: (BuildContext context, int i) {
           if (i.isOdd) return Divider();
-//            final index = i ~/ 2 + 1;
           final element = mainList[i];
           return _buildRow(element[0], element[1], element[2], element[3]);
         },
