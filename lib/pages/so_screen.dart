@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 final mainUrl =
-    "https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&accepted=True&tagged=flutter&site=stackoverflow";
+    "https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&accepted=True&tagged=flutter&site=stackoverflow&q=";
 
 class SO extends StatefulWidget {
   @override
@@ -13,13 +13,42 @@ class SO extends StatefulWidget {
 }
 
 class _SOState extends State<SO> {
-  bool _isLoading = false;
+  bool _isLoading = true;
   List _questions;
 
-  final title = 'Main List';
+  var _textController = TextEditingController();
 
-  _getQuestions() {
-    fetchQuestions().then((response) {
+  @override
+  void initState() {
+    super.initState();
+
+    _getQuestions('');
+
+    _textController.addListener(() {
+      //here you have the changes of your textfield
+      print("value: ${_textController.text}");
+
+      if (_textController.text.isNotEmpty) {
+        _getQuestions(_textController.text);
+        //use setState to rebuild the widget
+        setState(() {
+          _isLoading = true;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    // Clean up the controller when the Widget is disposed
+    _textController.dispose();
+  }
+
+  _getQuestions(String q) {
+    fetchQuestions(q).then((response) {
+      print(response.statusCode);
       if (response.statusCode == 200) {
         var extractedData = json.decode(response.body);
 
@@ -27,7 +56,7 @@ class _SOState extends State<SO> {
 //        return Post.fromJson(json.decode(response.body));
 
         setState(() {
-          _isLoading = true;
+          _isLoading = false;
           _questions = extractedData["items"];
 //          Iterable list = json.decode(response.body);
 //          users = list.map((model) => User.fromJson(model)).toList();
@@ -39,8 +68,8 @@ class _SOState extends State<SO> {
     });
   }
 
-  Future<http.Response> fetchQuestions() {
-    return http.get(mainUrl);
+  Future<http.Response> fetchQuestions(String q) {
+    return http.get(mainUrl + q);
   }
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
@@ -59,35 +88,66 @@ class _SOState extends State<SO> {
           title,
           style: _biggerFont,
         ),
-        trailing: Icon(Icons.dashboard),
+        trailing: Icon(
+          Icons.check,
+          color: Colors.green,
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    _getQuestions();
-
-    return MaterialApp(
-      title: title,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(title),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("StackOverflow"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context, false),
         ),
-        body: _isLoading
-            ? CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.green),
-              )
-            : ListView.builder(
-                itemCount: _questions.length,
-                padding: const EdgeInsets.all(16.0),
-                itemBuilder: (BuildContext context, int i) {
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 80,
+            child: Center(
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                child: TextField(
+                  controller: _textController,
+                  decoration: new InputDecoration(
+                    border: new OutlineInputBorder(
+                      borderSide: new BorderSide(),
+                    ),
+                    hintText: 'What are you looking for ?',
+                    labelText: 'Search',
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Divider(),
+          _isLoading
+              ? CircularProgressIndicator(
+                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.green),
+                )
+              : Expanded(
+                  flex: 6,
+                  child: Container(
+                    child: ListView.builder(
+                      itemCount: _questions.length,
+                      padding: const EdgeInsets.only(
+                          bottom: 16.0, left: 16.0, right: 16.0),
+                      itemBuilder: (BuildContext context, int i) {
 //                    if (i.isOdd) return Divider();
 //            final index = i ~/ 2 + 1;
-                  final element = _questions[i];
-                  return _buildRow(element['title']);
-                },
-              ),
+                        final element = _questions[i];
+                        return _buildRow(element['title']);
+                      },
+                    ),
+                  ),
+                ),
+        ],
       ),
     );
   }

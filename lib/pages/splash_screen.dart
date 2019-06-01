@@ -10,13 +10,23 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _timer = Timer(Duration(seconds: 5), () {
+    _timer = Timer(Duration(seconds: 1), () {
       Navigator.of(context).pushReplacementNamed('/main_list');
     });
 
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
       color: Colors.blue,
-      child: Text("splash"),
+      child: Center(
+        child: Text(
+          'Flutter HELPER is here to save you!',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            decoration: TextDecoration.none,
+          ),
+        ),
+      ),
     );
   }
 }

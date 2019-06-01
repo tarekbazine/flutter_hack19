@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hack19/pages/so_screen.dart';
 import 'package:flutter_hack19/pages/splash_screen.dart';
 import 'package:flutter_hack19/pages/main_list_screen.dart';
 
@@ -10,6 +11,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+//      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -29,7 +31,7 @@ class App extends StatelessWidget {
       routes: {
 //        '/': (context) => App(),
         '/main_list': (context) => MainList(),
-        '/so_route': (context) => MainList(),
+        '/so_route': (context) => SO(),
         '/reddit_route': (context) => MainList(),
         '/github_route': (context) => MainList(),
       },
