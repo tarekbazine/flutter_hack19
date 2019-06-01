@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
+//import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+
 final mainUrl =
     "https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&accepted=True&tagged=flutter&site=stackoverflow&q=";
 
@@ -74,11 +77,15 @@ class _SOState extends State<SO> {
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
-  Widget _buildRow(String title) {
+  Widget _buildRow(String title, String url) {
     return GestureDetector(
       onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => _WebView(url: url, title: title)));
 //          Navigator.pushNamed(context, routName);
-        print("onTap called.");
+        print("onTap called. " + url);
       },
       child: ListTile(
 //            leading: Text(
@@ -142,12 +149,29 @@ class _SOState extends State<SO> {
 //                    if (i.isOdd) return Divider();
 //            final index = i ~/ 2 + 1;
                         final element = _questions[i];
-                        return _buildRow(element['title']);
+                        return _buildRow(element['title'], element['link']);
                       },
                     ),
                   ),
                 ),
         ],
+      ),
+    );
+  }
+}
+
+class _WebView extends StatelessWidget {
+  var url;
+  var title;
+
+  _WebView({Key key, this.url, this.title}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WebviewScaffold(
+      url: url,
+      appBar: new AppBar(
+        title: new Text(title),
       ),
     );
   }

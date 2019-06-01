@@ -1,6 +1,7 @@
-# flutter_hack19
+# Flutter HELPER
 
-A new Flutter project.
+## Images credits
+https://www.flaticon.com
 
 ## Getting Started
 
